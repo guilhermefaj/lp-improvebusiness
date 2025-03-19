@@ -7,7 +7,7 @@ export function Card({ title, description, image }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="w-[413px] h-[420px] flex-shrink-0 rounded-[16px] p-[1px] relative group"
+            className="w-full max-w-[413px] min-h-[420px] flex-shrink-0 rounded-[16px] p-[1px] relative group mx-auto"
         >
             {/* Borda com gradiente no hover */}
             <div 
@@ -19,28 +19,28 @@ export function Card({ title, description, image }) {
             
             {/* Conteúdo do card com fundo */}
             <div 
-                className="w-full h-full rounded-[16px] pt-10 px-[40px] pb-[40px] flex flex-col justify-between relative bg-white border-[0.5px] border-[#DADCE0] group-hover:border-transparent"
+                className="w-full h-full rounded-[16px] pt-8 md:pt-10 px-6 md:px-[40px] pb-8 md:pb-[40px] flex flex-col justify-between relative bg-white border-[0.5px] border-[#DADCE0] group-hover:border-transparent"
                 style={{
                     background: 'linear-gradient(119deg, #FCF9F3 18.17%, #F0F6FB 50.2%, #FFF 74.51%)'
                 }}
             >
                 {/* Imagem */}
                 {image && (
-                    <div className="w-full h-[160px] mb-6">
+                    <div className="w-full h-[120px] md:h-[160px] mb-4 md:mb-6">
                         <LiquidImage
                             src={image}
                             alt={title}
-                            className="w-full h-full"
+                            className="w-full h-full object-contain"
                         />
                     </div>
                 )}
                 
                 {/* Texto */}
-                <div className="flex flex-col items-start w-[333px] gap-6">
-                    <h3 className="text-2xl font-clash font-bold text-[#1E1E1E]">
+                <div className="flex flex-col items-start w-full gap-4 md:gap-6">
+                    <h3 className="text-xl md:text-2xl font-clash font-bold text-[#1E1E1E]">
                         {title}
                     </h3>
-                    <p className="text-base text-gray-600">
+                    <p className="text-sm md:text-base text-gray-600">
                         {description}
                     </p>
                 </div>
