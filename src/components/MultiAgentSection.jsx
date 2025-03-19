@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
 import { Card } from "./Card";
+import { useContactModal } from '../contexts/ContactModalContext';
 
 export function MultiAgentSection() {
+    const { openContactModal } = useContactModal();
+    
     return (
         <section className="w-full bg-white py-6 md:py-16 lg:py-20">
             <div className="max-w-[1360px] mx-auto px-4 md:px-6 lg:px-[40px]">
@@ -56,7 +59,8 @@ export function MultiAgentSection() {
                             transition={{ duration: 0.6, delay: 0.4 }}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="w-full md:w-auto px-6 md:px-8 py-3 border-2 border-[#FF610B] text-[#FF610B] rounded-full font-clash font-semibold transition-all duration-300 hover:bg-[#FF610B] hover:text-white"
+                            onClick={openContactModal}
+                            className="w-full md:w-auto px-6 md:px-8 py-3 border-2 border-[#FF610B] text-[#FF610B] rounded-full font-ibm font-semibold transition-all duration-300 hover:bg-[#FF610B] hover:text-white"
                         >
                             Entrar em contato
                         </motion.button>
