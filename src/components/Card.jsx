@@ -19,18 +19,18 @@ export function Card({ title, description, image }) {
             
             {/* Conteúdo do card com fundo */}
             <div 
-                className="w-full h-full rounded-[16px] pt-8 md:pt-10 px-6 md:px-[40px] pb-8 md:pb-[40px] flex flex-col justify-between relative bg-white border-[0.5px] border-[#DADCE0] group-hover:border-transparent"
+                className="w-full h-full rounded-[16px] pt-8 md:pt-10 px-4 md:px-6 lg:px-[40px] pb-8 md:pb-[40px] flex flex-col justify-between relative bg-white border-[0.5px] border-[#DADCE0] group-hover:border-transparent"
                 style={{
                     background: 'linear-gradient(119deg, #FCF9F3 18.17%, #F0F6FB 50.2%, #FFF 74.51%)'
                 }}
             >
                 {/* Imagem */}
                 {image && (
-                    <div className="w-full h-[120px] md:h-[160px] mb-4 md:mb-6">
+                    <div className="w-full h-[140px] md:h-[160px] mb-4 md:mb-6 flex items-center justify-center">
                         <LiquidImage
                             src={image}
                             alt={title}
-                            className="w-full h-full object-contain"
+                            className="w-[80%] h-full object-contain"
                         />
                     </div>
                 )}
