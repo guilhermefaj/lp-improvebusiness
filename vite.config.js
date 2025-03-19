@@ -7,13 +7,22 @@ export default defineConfig({
     port: 3000,
     open: true,
     cors: true,
-    origin: 'http://localhost:3000',
-    historyApiFallback: true
+    origin: 'http://localhost:3000'
   },
   base: '/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    sourcemap: true
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
+  },
+  resolve: {
+    alias: {
+      '@': '/src'
+    }
   }
 }); 
