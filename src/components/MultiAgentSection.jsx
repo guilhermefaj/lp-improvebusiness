@@ -41,7 +41,7 @@ export function MultiAgentSection() {
                             image="https://res.cloudinary.com/dl4jtxnnv/image/upload/v1742248783/66e02a8ada5d8267f0d0bbf7_vector-5_a6xcir.png"
                         />
                     </div>
-                    <div className="flex flex-col md:flex-col gap-6 mt-8 md:mt-10">
+                    <div className="flex flex-col md:flex-row justify-between items-start mt-8 md:mt-10 gap-6 md:gap-8">
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -54,12 +54,9 @@ export function MultiAgentSection() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.4 }}
-                            whileHover={{ 
-                                scale: 1.05,
-                                backgroundColor: '#FF610B',
-                                color: 'white'
-                            }}
-                            className="px-6 md:px-8 py-3 border-2 border-[#FF610B] text-[#FF610B] rounded-full font-semibold transition-all duration-300 hover:shadow-lg w-full md:w-auto"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="w-full md:w-auto px-6 md:px-8 py-3 border-2 border-[#FF610B] text-[#FF610B] rounded-full font-clash font-semibold transition-all duration-300 hover:bg-[#FF610B] hover:text-white"
                         >
                             Entrar em contato
                         </motion.button>
