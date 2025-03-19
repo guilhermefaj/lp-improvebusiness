@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { EnvelopeSimple, User, Phone, Buildings } from '@phosphor-icons/react';
 import { z } from 'zod';
-import { sendContactEmail } from '../services/email';
+import { sendEmail } from '../services/email';
 
 const formSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -21,65 +21,38 @@ export function ContactForm({ onClose }) {
     message: ''
   });
 
-  const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState('idle'); // idle, loading, success, error
-  const [submitMessage, setSubmitMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    // Limpa o erro do campo quando o usuário começa a digitar
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus('loading');
-    setSubmitMessage('');
+    setIsSubmitting(true);
+    setSubmitStatus(null);
 
     try {
-      // Valida os dados do formulário
-      formSchema.parse(formData);
-
-      // Envia o email
-      const result = await sendContactEmail(formData);
-
-      if (!result.success) {
-        throw new Error(result.error || 'Erro ao enviar mensagem');
+      const result = await sendEmail(formData);
+      
+      if (result.error) {
+        setSubmitStatus({ type: 'error', message: 'Não foi possível enviar sua mensagem agora. Por favor, tente novamente mais tarde.' });
+        return;
       }
 
-      // Limpa o formulário
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        message: ''
-      });
-      setStatus('success');
-      setSubmitMessage('Mensagem enviada com sucesso! Entraremos em contato em breve.');
-
-      // Fecha o modal após 2 segundos
+      setSubmitStatus({ type: 'success', message: 'Mensagem enviada com sucesso!' });
       setTimeout(() => {
-        if (onClose) {
-          onClose();
-        }
+        onClose();
       }, 2000);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        const newErrors = {};
-        error.errors.forEach(err => {
-          newErrors[err.path[0]] = err.message;
-        });
-        setErrors(newErrors);
-        setStatus('error');
-        setSubmitMessage('Por favor, corrija os erros no formulário.');
-      } else {
-        setStatus('error');
-        setSubmitMessage('Erro ao enviar mensagem. Tente novamente mais tarde.');
-      }
+      setSubmitStatus({ type: 'error', message: 'Ocorreu um erro. Por favor, tente novamente.' });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -99,12 +72,12 @@ export function ContactForm({ onClose }) {
               onChange={handleChange}
               placeholder="Seu nome"
               className={`w-full pl-12 pr-4 py-3 rounded-lg border ${
-                errors.name ? 'border-red-500' : 'border-gray-200'
+                submitStatus && submitStatus.type === 'error' && submitStatus.path === 'name' ? 'border-red-500' : 'border-gray-200'
               } focus:outline-none focus:ring-2 focus:ring-[#FF610B] focus:border-transparent`}
             />
           </div>
-          {errors.name && (
-            <p className="mt-1 text-red-500 text-sm">{errors.name}</p>
+          {submitStatus && submitStatus.type === 'error' && submitStatus.path === 'name' && (
+            <p className="mt-1 text-red-500 text-sm">{submitStatus.message}</p>
           )}
         </div>
 
@@ -118,12 +91,12 @@ export function ContactForm({ onClose }) {
               onChange={handleChange}
               placeholder="Seu email"
               className={`w-full pl-12 pr-4 py-3 rounded-lg border ${
-                errors.email ? 'border-red-500' : 'border-gray-200'
+                submitStatus && submitStatus.type === 'error' && submitStatus.path === 'email' ? 'border-red-500' : 'border-gray-200'
               } focus:outline-none focus:ring-2 focus:ring-[#FF610B] focus:border-transparent`}
             />
           </div>
-          {errors.email && (
-            <p className="mt-1 text-red-500 text-sm">{errors.email}</p>
+          {submitStatus && submitStatus.type === 'error' && submitStatus.path === 'email' && (
+            <p className="mt-1 text-red-500 text-sm">{submitStatus.message}</p>
           )}
         </div>
 
@@ -137,12 +110,12 @@ export function ContactForm({ onClose }) {
               onChange={handleChange}
               placeholder="Seu telefone"
               className={`w-full pl-12 pr-4 py-3 rounded-lg border ${
-                errors.phone ? 'border-red-500' : 'border-gray-200'
+                submitStatus && submitStatus.type === 'error' && submitStatus.path === 'phone' ? 'border-red-500' : 'border-gray-200'
               } focus:outline-none focus:ring-2 focus:ring-[#FF610B] focus:border-transparent`}
             />
           </div>
-          {errors.phone && (
-            <p className="mt-1 text-red-500 text-sm">{errors.phone}</p>
+          {submitStatus && submitStatus.type === 'error' && submitStatus.path === 'phone' && (
+            <p className="mt-1 text-red-500 text-sm">{submitStatus.message}</p>
           )}
         </div>
 
@@ -156,12 +129,12 @@ export function ContactForm({ onClose }) {
               onChange={handleChange}
               placeholder="Sua empresa"
               className={`w-full pl-12 pr-4 py-3 rounded-lg border ${
-                errors.company ? 'border-red-500' : 'border-gray-200'
+                submitStatus && submitStatus.type === 'error' && submitStatus.path === 'company' ? 'border-red-500' : 'border-gray-200'
               } focus:outline-none focus:ring-2 focus:ring-[#FF610B] focus:border-transparent`}
             />
           </div>
-          {errors.company && (
-            <p className="mt-1 text-red-500 text-sm">{errors.company}</p>
+          {submitStatus && submitStatus.type === 'error' && submitStatus.path === 'company' && (
+            <p className="mt-1 text-red-500 text-sm">{submitStatus.message}</p>
           )}
         </div>
 
@@ -173,39 +146,33 @@ export function ContactForm({ onClose }) {
             placeholder="Sua mensagem"
             rows={4}
             className={`w-full px-4 py-3 rounded-lg border ${
-              errors.message ? 'border-red-500' : 'border-gray-200'
+              submitStatus && submitStatus.type === 'error' && submitStatus.path === 'message' ? 'border-red-500' : 'border-gray-200'
             } focus:outline-none focus:ring-2 focus:ring-[#FF610B] focus:border-transparent`}
           />
-          {errors.message && (
-            <p className="mt-1 text-red-500 text-sm">{errors.message}</p>
+          {submitStatus && submitStatus.type === 'error' && submitStatus.path === 'message' && (
+            <p className="mt-1 text-red-500 text-sm">{submitStatus.message}</p>
           )}
         </div>
 
+        {submitStatus && (
+          <div className={`p-3 rounded-md ${
+            submitStatus.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+          }`}>
+            {submitStatus.message}
+          </div>
+        )}
+
         <motion.button
           type="submit"
-          disabled={status === 'loading'}
+          disabled={isSubmitting}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           className={`w-full py-4 rounded-full font-ibm font-semibold text-white transition-colors duration-300 ${
-            status === 'loading'
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-[#FF610B] hover:bg-[#e65709]'
+            isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#FF610B] hover:bg-[#e65709]'
           }`}
         >
-          {status === 'loading' ? 'Enviando...' : 'Enviar mensagem'}
+          {isSubmitting ? 'Enviando...' : 'Enviar mensagem'}
         </motion.button>
-
-        {submitMessage && (
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`text-center ${
-              status === 'success' ? 'text-green-600' : 'text-red-500'
-            }`}
-          >
-            {submitMessage}
-          </motion.p>
-        )}
       </form>
     </div>
   );
