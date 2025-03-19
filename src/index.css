@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --color-primary: 255, 101, 17;
+        --color-primary-hover: 229, 90, 15;
+        --color-secondary: 37, 99, 235;
+        --color-secondary-hover: 29, 78, 216;
+        --color-background: 255, 255, 255;
+        --color-text: 17, 24, 39;
+        --color-text-muted: 107, 114, 128;
+    }
+
+    .dark {
+        --color-background: 17, 24, 39;
+        --color-text: 255, 255, 255;
+        --color-text-muted: 156, 163, 175;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        @apply font-sans antialiased;
+    }
+}
+
+@layer components {
+    .nav-link {
+        @apply text-gray-700 hover:text-primary transition-colors font-medium;
+    }
+
+    .dark .nav-link {
+        @apply text-gray-300 hover:text-primary;
+    }
+
+    .section {
+        @apply py-16 md:py-24;
+    }
+
+    .container {
+        @apply max-w-[1360px] mx-auto px-4 md:px-6 lg:px-[40px];
+    }
+
+    .heading-1 {
+        @apply text-4xl md:text-5xl lg:text-6xl font-bold;
+    }
+
+    .heading-2 {
+        @apply text-3xl md:text-4xl lg:text-5xl font-bold;
+    }
+
+    .heading-3 {
+        @apply text-2xl md:text-3xl lg:text-4xl font-bold;
+    }
+}
+
+/* Estilos de Scroll Suave */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Estilos de Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* Estilos de Seleção de Texto */
+::selection {
+    background: rgba(var(--color-primary), 0.2);
+    color: rgb(var(--color-text));
+}
+
+.waves {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.wave {
+    position: absolute;
+    width: 150%;
+    height: 100%;
+    background: linear-gradient(45deg, #FF6511, #FF7A33, #FF9966);
+    opacity: 0.2;
+}
+
+.wave1 {
+    top: 30%;
+    border-radius: 35%;
+    transform: rotate(5deg);
+}
+
+.wave2 {
+    top: 35%;
+    border-radius: 30%;
+    background: linear-gradient(45deg, #FF7A33, #FF9966, #FF6511);
+    transform: rotate(-2deg);
+}
+
+.wave3 {
+    top: 33%;
+    border-radius: 40%;
+    background: linear-gradient(45deg, #FF9966, #FF6511, #FF7A33);
+    transform: rotate(3deg);
+} 
