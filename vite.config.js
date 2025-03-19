@@ -9,7 +9,7 @@ export default defineConfig({
     open: true,
     cors: true
   },
-  base: './',
+  base: '/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -17,6 +17,9 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html')
+      },
+      output: {
+        manualChunks: undefined
       }
     }
   },
