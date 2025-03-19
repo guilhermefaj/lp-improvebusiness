@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { EnvelopeSimple, User, Phone, Buildings } from '@phosphor-icons/react';
 import { z } from 'zod';
+import useWeb3Forms from '@web3forms/react';
 
-const FORMSPARK_ACTION_URL = "https://submit-form.com/sa4Msda2v";
+// Obtendo a chave de acesso da variável de ambiente
+const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || "YOUR_ACCESS_KEY_HERE";
 
 const formSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -42,6 +44,39 @@ export function ContactForm({ onClose }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
 
+  // Configuração do Web3Forms
+  const { submit } = useWeb3Forms({
+    access_key: WEB3FORMS_ACCESS_KEY,
+    settings: {
+      from_name: 'Formulário ImproveAI',
+      subject: 'Nova mensagem do site ImproveAI',
+      botcheck: true,
+    },
+    onSuccess: (message, data) => {
+      setSubmitStatus({ 
+        type: 'success', 
+        message: 'Mensagem enviada com sucesso! Em breve entraremos em contato.' 
+      });
+      // Limpar formulário após sucesso
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        message: ''
+      });
+      setTimeout(() => {
+        onClose();
+      }, 3000);
+    },
+    onError: (message, data) => {
+      setSubmitStatus({
+        type: 'error',
+        message: 'Não foi possível enviar sua mensagem. Por favor, tente novamente mais tarde ou entre em contato diretamente pelo email contato@improve.business.'
+      });
+    }
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     
@@ -60,28 +95,39 @@ export function ContactForm({ onClose }) {
     setSubmitStatus(null);
 
     try {
-      const response = await fetch(FORMSPARK_ACTION_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Falha ao enviar mensagem');
+      // Validando os dados com Zod antes de enviar
+      const validation = formSchema.safeParse(formData);
+      
+      if (!validation.success) {
+        const error = validation.error.issues[0];
+        setSubmitStatus({ 
+          type: 'error', 
+          path: error.path[0],
+          message: error.message 
+        });
+        throw new Error(error.message);
       }
 
-      setSubmitStatus({ type: 'success', message: 'Mensagem enviada com sucesso!' });
-      setTimeout(() => {
-        onClose();
-      }, 2000);
-    } catch (error) {
-      setSubmitStatus({ 
-        type: 'error', 
-        message: 'Não foi possível enviar sua mensagem agora. Por favor, tente novamente mais tarde.' 
+      // Enviando dados usando Web3Forms
+      await submit({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        message: formData.message,
+        botcheck: '',
+        'h-captcha-response': '',  // Se estiver usando hCaptcha
+        subject: `Contato de ${formData.name} - ${formData.company}`,
+        replyTo: formData.email // Para que a resposta vá para o email informado
       });
+
+    } catch (error) {
+      if (!submitStatus) {
+        setSubmitStatus({ 
+          type: 'error', 
+          message: 'Não foi possível enviar sua mensagem agora. Por favor, tente novamente mais tarde.' 
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -226,6 +272,10 @@ export function ContactForm({ onClose }) {
         >
           {isSubmitting ? 'Enviando...' : 'Enviar mensagem'}
         </motion.button>
+        
+        <div className="text-center text-xs text-gray-400 mt-4">
+          Protegido por Web3Forms. Não enviamos spam.
+        </div>
       </form>
     </div>
   );
