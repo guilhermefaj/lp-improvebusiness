@@ -2,15 +2,33 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { EnvelopeSimple, User, Phone, Buildings } from '@phosphor-icons/react';
 import { z } from 'zod';
-import { sendEmail } from '../services/email';
+
+const FORMSPARK_ACTION_URL = "https://submit-form.com/sa4Msda2v";
 
 const formSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
   email: z.string().email('Email inválido'),
-  phone: z.string().min(10, 'Telefone inválido'),
+  phone: z.string().min(14, 'Telefone inválido'),
   company: z.string().min(2, 'Nome da empresa deve ter pelo menos 2 caracteres'),
   message: z.string().min(10, 'Mensagem deve ter pelo menos 10 caracteres')
 });
+
+const formatPhone = (value) => {
+  // Remove tudo que não é número
+  const numbers = value.replace(/\D/g, '');
+  
+  // Aplica a máscara (XX) XXXXX-XXXX
+  if (numbers.length <= 11) {
+    return numbers.replace(/(\d{2})(\d{0,5})(\d{0,4})/, (_, ddd, first, second) => {
+      if (second) return `(${ddd}) ${first}-${second}`;
+      if (first) return `(${ddd}) ${first}`;
+      if (ddd) return `(${ddd}`;
+      return '';
+    });
+  }
+  
+  return value.slice(0, 15);
+};
 
 export function ContactForm({ onClose }) {
   const [formData, setFormData] = useState({
@@ -26,9 +44,13 @@ export function ContactForm({ onClose }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Aplica a máscara apenas para o campo de telefone
+    const formattedValue = name === 'phone' ? formatPhone(value) : value;
+    
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: formattedValue
     }));
   };
 
@@ -38,11 +60,17 @@ export function ContactForm({ onClose }) {
     setSubmitStatus(null);
 
     try {
-      const result = await sendEmail(formData);
-      
-      if (result.error) {
-        setSubmitStatus({ type: 'error', message: 'Não foi possível enviar sua mensagem agora. Por favor, tente novamente mais tarde.' });
-        return;
+      const response = await fetch(FORMSPARK_ACTION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Falha ao enviar mensagem');
       }
 
       setSubmitStatus({ type: 'success', message: 'Mensagem enviada com sucesso!' });
@@ -50,7 +78,10 @@ export function ContactForm({ onClose }) {
         onClose();
       }, 2000);
     } catch (error) {
-      setSubmitStatus({ type: 'error', message: 'Ocorreu um erro. Por favor, tente novamente.' });
+      setSubmitStatus({ 
+        type: 'error', 
+        message: 'Não foi possível enviar sua mensagem agora. Por favor, tente novamente mais tarde.' 
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -149,17 +180,39 @@ export function ContactForm({ onClose }) {
               submitStatus && submitStatus.type === 'error' && submitStatus.path === 'message' ? 'border-red-500' : 'border-gray-200'
             } focus:outline-none focus:ring-2 focus:ring-[#FF610B] focus:border-transparent`}
           />
-          {submitStatus && submitStatus.type === 'error' && submitStatus.path === 'message' && (
-            <p className="mt-1 text-red-500 text-sm">{submitStatus.message}</p>
-          )}
+          <div className="flex justify-between items-center mt-1">
+            <span className="text-sm text-gray-500">
+              {formData.message.length} / 500 caracteres
+            </span>
+            {submitStatus && submitStatus.type === 'error' && submitStatus.path === 'message' && (
+              <p className="text-red-500 text-sm">{submitStatus.message}</p>
+            )}
+          </div>
         </div>
 
-        {submitStatus && (
-          <div className={`p-3 rounded-md ${
-            submitStatus.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-          }`}>
-            {submitStatus.message}
-          </div>
+        {submitStatus && submitStatus.type && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`p-4 rounded-lg ${
+              submitStatus.type === 'success' 
+                ? 'bg-green-100 text-green-700 border border-green-200' 
+                : 'bg-red-100 text-red-700 border border-red-200'
+            }`}
+          >
+            <div className="flex items-center">
+              {submitStatus.type === 'success' ? (
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              )}
+              {submitStatus.message}
+            </div>
+          </motion.div>
         )}
 
         <motion.button

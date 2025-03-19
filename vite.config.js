@@ -6,14 +6,18 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
-    open: true,
-    cors: true
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
+    },
   },
   base: '/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    sourcemap: false,
+    sourcemap: true,
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html')

@@ -1,0 +1,1 @@
+// ⚠️ Arquivo inteiro deve ser removido
