@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 import { EnvelopeSimple, User, Phone, Buildings, CheckCircle, Warning } from '@phosphor-icons/react';
 import { z } from 'zod';
 
-// Chave de acesso da Web3Forms
+// Chaves de acesso para APIs de formulário
 const WEB3FORMS_ACCESS_KEY = "7302a07f-6708-4ce9-86eb-38780c6249fd";
+const FORMSPARK_FORM_ID = "sa4Msda2v"; // Substitua pelo seu ID do FormSpark
 
 // Schema de validação unificado
 const formSchema = z.object({
@@ -53,6 +54,7 @@ export function ContactForm({ onClose, onMobileFormFailure }) {
   const [fieldErrors, setFieldErrors] = useState({});
   const [isMobile, setIsMobile] = useState(false);
   const [failureCount, setFailureCount] = useState(0);
+  const [usedFallback, setUsedFallback] = useState(false);
 
   // Detectar se é dispositivo móvel
   useEffect(() => {
@@ -105,6 +107,64 @@ export function ContactForm({ onClose, onMobileFormFailure }) {
     setFormData(prev => ({ ...prev, [name]: formattedValue }));
   };
 
+  // Enviar formulário via Web3Forms
+  const submitViaWeb3Forms = async (submitData) => {
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(submitData)
+      });
+      
+      const responseData = await response.json();
+      logInfo('Resposta do Web3Forms', { responseData, status: response.status });
+      
+      if (responseData.success) {
+        return { success: true };
+      } else {
+        throw new Error(responseData.message || 'Erro ao enviar formulário via Web3Forms');
+      }
+    } catch (error) {
+      logInfo('Erro ao enviar via Web3Forms', { error: error.toString() });
+      throw error;
+    }
+  };
+  
+  // Enviar formulário via FormSpark (fallback)
+  const submitViaFormSpark = async (formData) => {
+    try {
+      logInfo('Tentando envio via FormSpark (fallback)', { formData });
+      
+      const response = await fetch(`https://submit-form.com/${FORMSPARK_FORM_ID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          _email: {
+            subject: `Contato de ${formData.name} - ${formData.company} [Fallback]`,
+            from: "Site ImproveAI (via FormSpark)"
+          }
+        })
+      });
+      
+      if (response.ok) {
+        return { success: true };
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Erro ao enviar formulário via FormSpark');
+      }
+    } catch (error) {
+      logInfo('Erro ao enviar via FormSpark', { error: error.toString() });
+      throw error;
+    }
+  };
+
   // Enviar formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -150,36 +210,40 @@ export function ContactForm({ onClose, onMobileFormFailure }) {
         from_name: "Site ImproveAI"
       };
       
-      // Enviar dados via fetch API
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(submitData)
-      });
-      
-      const responseData = await response.json();
-      
-      logInfo('Resposta da API', { responseData, status: response.status });
-      
-      if (responseData.success) {
+      try {
+        // Tentativa com Web3Forms
+        await submitViaWeb3Forms(submitData);
+        setUsedFallback(false);
         // Sucesso no envio
         setIsSuccess(true);
+      } catch (primaryError) {
+        // Se falhar, tenta com FormSpark
+        logInfo('Tentando com sistema de fallback (FormSpark)', { primaryError });
         
-        // Resetar o formulário
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          company: '',
-          message: ''
-        });
-      } else {
-        // Erro retornado pela API
-        throw new Error(responseData.message || 'Erro ao enviar o formulário');
+        try {
+          await submitViaFormSpark(formData);
+          setUsedFallback(true);
+          // Sucesso no envio via fallback
+          setIsSuccess(true);
+        } catch (fallbackError) {
+          // Ambos os sistemas falharam
+          logInfo('Falha no sistema primário e no fallback', { 
+            primaryError, 
+            fallbackError 
+          });
+          throw new Error('Não foi possível enviar o formulário por nenhum dos métodos');
+        }
       }
+      
+      // Resetar o formulário após sucesso
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        message: ''
+      });
+      
     } catch (error) {
       logInfo('Erro na submissão', { 
         error: error.toString(),
@@ -371,9 +435,9 @@ export function ContactForm({ onClose, onMobileFormFailure }) {
         
         {/* Rodapé do Formulário */}
         <div className="text-center text-[10px] sm:text-xs text-gray-400 mt-2 sm:mt-4">
-          Protegido por Web3Forms. Não enviamos spam.
+          Não enviamos spam.
         </div>
       </form>
     </div>
   );
-} 
+}
