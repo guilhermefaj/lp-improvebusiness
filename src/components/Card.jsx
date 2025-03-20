@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { LiquidImage } from "./LiquidImage";
 
-export function Card({ title, description, image }) {
+export function Card({ title, description, image, imageAlt }) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -15,6 +15,7 @@ export function Card({ title, description, image }) {
                 style={{
                     background: 'linear-gradient(119deg, #6833FF 0%, #FF610B 100%)'
                 }}
+                aria-hidden="true"
             />
             
             {/* Conteúdo do card com fundo */}
@@ -26,21 +27,24 @@ export function Card({ title, description, image }) {
             >
                 {/* Imagem */}
                 {image && (
-                    <div className="w-full h-[140px] md:h-[160px] mb-4 md:mb-6 flex items-center justify-center">
+                    <div className="mb-6">
                         <LiquidImage
                             src={image}
-                            alt={title}
-                            className="w-[80%] h-full object-contain"
+                            alt={imageAlt || `Ilustração para ${title}`}
+                            width="300"
+                            height="200"
+                            loading="lazy"
+                            className="w-full max-w-[160px] md:max-w-[200px]"
                         />
                     </div>
                 )}
                 
-                {/* Texto */}
-                <div className="flex flex-col items-start w-full gap-4 md:gap-6">
+                {/* Conteúdo de texto */}
+                <div>
                     <h3 className="text-xl md:text-2xl font-clash font-bold text-[#1E1E1E]">
                         {title}
                     </h3>
-                    <p className="text-sm md:text-base text-gray-600">
+                    <p className="mt-3 md:mt-4 text-[#4A5568] text-sm md:text-base font-ibm">
                         {description}
                     </p>
                 </div>

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-export function LiquidImage({ src, alt, className }) {
+export function LiquidImage({ src, alt, className, width = "400", height = "300", loading = "lazy" }) {
   const containerRef = useRef(null);
   const imageRef = useRef(null);
   const rafId = useRef(null);
@@ -83,8 +83,11 @@ export function LiquidImage({ src, alt, className }) {
       <img
         ref={imageRef}
         src={src}
-        alt={alt}
-        className="w-full h-full object-contain"
+        alt={alt || "Imagem ilustrativa"}
+        width={width}
+        height={height}
+        loading={loading}
+        className="w-full h-auto object-cover rounded-[12px] transition-transform"
         style={{
           willChange: 'transform',
           transformStyle: 'preserve-3d',

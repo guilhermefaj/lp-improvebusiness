@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Sitemap: https://improve.business/sitemap.xml
+
+# Bots ruins para bloquear
+User-agent: BLEXBot
+Disallow: /
+
+# Permite indexação
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: / 

@@ -5,7 +5,7 @@ export function Hero() {
     const { openContactModal } = useContactModal();
 
     return (
-        <section className="w-full min-h-[716px] relative bg-gradient-to-b from-[#F5F0EF] from-80.41% to-white to-100%">
+        <section className="w-full min-h-[716px] relative bg-gradient-to-b from-[#F5F0EF] from-80.41% to-white to-100%" aria-labelledby="hero-heading">
             <div className="max-w-[1360px] min-h-[716px] mx-auto relative pt-[140px]">
                 {/* Background Rectangle with Animation */}
                 <motion.div 
@@ -21,7 +21,10 @@ export function Hero() {
                             loop
                             muted
                             playsInline
+                            preload="auto"
                             className="absolute inset-0 w-full h-full object-cover"
+                            poster="https://res.cloudinary.com/dl4jtxnnv/image/upload/v1742334607/hero-poster_abfc4h.jpg"
+                            aria-hidden="true"
                         >
                             <source 
                                 src="https://res.cloudinary.com/dl4jtxnnv/video/upload/v1742334607/5405026_Coll_wavebreak_Icon_1280x720_online-video-cutter.com_e0sgq2.mp4" 
@@ -31,11 +34,15 @@ export function Hero() {
                                 src="https://res.cloudinary.com/dl4jtxnnv/video/upload/v1742335368/5405026_Coll_wavebreak_Icon_1280x720_online-video-cutter.com_euigg6.webm" 
                                 type="video/webm" 
                             />
+                            Seu navegador não suporta o elemento de vídeo.
                         </video>
                     </div>
 
                     {/* Gradient Overlay for better text contrast */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
+                    <div 
+                        className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"
+                        aria-hidden="true"
+                    ></div>
                     
                     {/* Conteúdo/Texto com Animação */}
                     <motion.div 
@@ -44,7 +51,10 @@ export function Hero() {
                         transition={{ duration: 0.6, delay: 0.3 }}
                         className="relative z-10 flex flex-col justify-end h-full p-4 md:p-6 lg:pl-[40px] lg:pb-[40px]"
                     >
-                        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-clash font-bold mb-4 lg:mb-6 leading-tight max-w-[280px] sm:max-w-[400px] md:max-w-[600px] text-white [text-shadow:0px_2px_4px_rgba(0,0,0,0.25)]">
+                        <h1 
+                            id="hero-heading" 
+                            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-clash font-bold mb-4 lg:mb-6 leading-tight max-w-[280px] sm:max-w-[400px] md:max-w-[600px] text-white [text-shadow:0px_2px_4px_rgba(0,0,0,0.25)]"
+                        >
                             A Improve leva a IA conversacional para o próximo nível
                         </h1>
                         <motion.button 
@@ -52,6 +62,7 @@ export function Hero() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             className="w-[160px] sm:w-[180px] h-[36px] sm:h-[40px] bg-white rounded-[30px] hover:bg-gray-50 transition-all shadow-md hover:shadow-lg"
+                            aria-label="Entre em contato conosco"
                         >
                             <span className="text-black font-ibm font-semibold text-sm sm:text-base">
                                 Entrar em contato
