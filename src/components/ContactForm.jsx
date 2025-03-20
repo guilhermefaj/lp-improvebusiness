@@ -70,6 +70,7 @@ export function ContactForm({ onClose, onMobileFormFailure }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [successShowing, setSuccessShowing] = useState(false);
   const botcheckRef = useRef("");  // Referência para o campo botcheck
 
   // Para debug e diagnóstico
@@ -125,10 +126,15 @@ export function ContactForm({ onClose, onMobileFormFailure }) {
     },
     onSuccess: (message, data) => {
       console.log("Sucesso no envio:", message);
+      logForEruda('Sucesso no envio do formulário', { message, data });
+      
+      // Marcar como sucesso e exibir mensagem
+      setSuccessShowing(true);
       setSubmitStatus({ 
         type: 'success', 
         message: 'Mensagem enviada com sucesso! Em breve entraremos em contato.' 
       });
+      
       // Limpar formulário após sucesso
       setFormData({
         name: '',
@@ -137,9 +143,13 @@ export function ContactForm({ onClose, onMobileFormFailure }) {
         company: '',
         message: ''
       });
+      
+      // Fechar o modal apenas após um tempo para garantir que a mensagem seja vista
       setTimeout(() => {
-        onClose();
-      }, 3000);
+        if (onClose) {
+          onClose();
+        }
+      }, 4000);
     },
     onError: (message, data) => {
       console.error('Erro no formulário Web3Forms:', message, data);
@@ -229,6 +239,12 @@ export function ContactForm({ onClose, onMobileFormFailure }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Se já está mostrando mensagem de sucesso, não permite novo envio
+    if (successShowing) {
+      return;
+    }
+    
     setIsSubmitting(true);
     setSubmitStatus(null);
     formSubmissionAttempts.current += 1;
@@ -302,7 +318,33 @@ export function ContactForm({ onClose, onMobileFormFailure }) {
           logForEruda('Detectado iOS, usando método alternativo', { userAgent: navigator.userAgent });
           const result = await submitAlternative(submitData);
           success = result.success;
-          logForEruda('Resultado do envio alternativo', { result });
+          
+          if (success) {
+            // Se o método alternativo tiver sucesso, mostramos a mensagem de sucesso
+            setSuccessShowing(true);
+            setSubmitStatus({ 
+              type: 'success', 
+              message: 'Mensagem enviada com sucesso! Em breve entraremos em contato.' 
+            });
+            
+            // Limpar formulário após sucesso
+            setFormData({
+              name: '',
+              email: '',
+              phone: '',
+              company: '',
+              message: ''
+            });
+            
+            // Fechar o modal após um tempo
+            setTimeout(() => {
+              if (onClose) {
+                onClose();
+              }
+            }, 4000);
+          }
+          
+          logForEruda('Resultado do envio alternativo', { result, success });
         } catch (iosError) {
           logForEruda('Falha no método alternativo iOS', { error: iosError.toString() });
           // Se falhar o método alternativo, tentamos o método normal
@@ -508,14 +550,18 @@ export function ContactForm({ onClose, onMobileFormFailure }) {
 
         <motion.button
           type="submit"
-          disabled={isSubmitting}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          disabled={isSubmitting || successShowing}
+          whileHover={{ scale: isSubmitting || successShowing ? 1 : 1.02 }}
+          whileTap={{ scale: isSubmitting || successShowing ? 1 : 0.98 }}
           className={`w-full py-3 sm:py-4 rounded-full font-ibm font-semibold text-white transition-colors duration-300 text-sm sm:text-base ${
-            isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#FF610B] hover:bg-[#e65709]'
+            isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 
+            successShowing ? 'bg-green-500 cursor-not-allowed' : 
+            'bg-[#FF610B] hover:bg-[#e65709]'
           }`}
         >
-          {isSubmitting ? 'Enviando...' : 'Enviar mensagem'}
+          {isSubmitting ? 'Enviando...' : 
+           successShowing ? 'Enviado com sucesso!' :
+           'Enviar mensagem'}
         </motion.button>
         
         <div className="text-center text-[10px] sm:text-xs text-gray-400 mt-2 sm:mt-4">
