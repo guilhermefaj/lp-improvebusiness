@@ -6,6 +6,19 @@ import { AgentesInteligentes } from './pages/AgentesInteligentes'
 import { ContactModalProvider } from './contexts/ContactModalContext'
 import './index.css'
 
+// Verificar se as variáveis de ambiente estão configuradas corretamente
+if (import.meta.env.DEV) {
+  const requiredEnvVars = ['VITE_WEB3FORMS_ACCESS_KEY'];
+  const missingVars = requiredEnvVars.filter(varName => !import.meta.env[varName]);
+  
+  if (missingVars.length > 0) {
+    console.warn(`⚠️ Variáveis de ambiente ausentes: ${missingVars.join(', ')}`);
+    console.warn('Por favor, verifique seu arquivo .env e certifique-se de que as variáveis necessárias estão configuradas.');
+  } else {
+    console.log('✅ Todas as variáveis de ambiente necessárias estão configuradas.');
+  }
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>

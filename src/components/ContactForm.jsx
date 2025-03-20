@@ -67,6 +67,11 @@ export function ContactForm({ onClose }) {
   useEffect(() => {
     console.log("Modo dispositivo:", isMobile ? "Mobile" : "Desktop");
     console.log("API Key configurada:", WEB3FORMS_ACCESS_KEY ? "Sim" : "Não");
+    
+    // Verificar se há problemas com a chave no carregamento
+    if (!WEB3FORMS_ACCESS_KEY) {
+      console.warn("Chave de API Web3Forms não encontrada. Verifique o arquivo .env");
+    }
   }, [isMobile]);
 
   // Configuração do Web3Forms
@@ -97,10 +102,19 @@ export function ContactForm({ onClose }) {
     },
     onError: (message, data) => {
       console.error('Erro no formulário Web3Forms:', message, data);
-      setSubmitStatus({
-        type: 'error',
-        message: 'Não foi possível enviar sua mensagem. Por favor, tente novamente mais tarde ou entre em contato diretamente pelo email contato@improve.business.'
-      });
+      
+      // Verificar se o erro está relacionado à chave de API
+      if (message && message.toLowerCase().includes("api key")) {
+        setSubmitStatus({
+          type: 'error',
+          message: 'Erro de configuração no formulário. Por favor, entre em contato pelo email contato@improve.business.'
+        });
+      } else {
+        setSubmitStatus({
+          type: 'error',
+          message: 'Não foi possível enviar sua mensagem. Por favor, tente novamente mais tarde ou entre em contato diretamente pelo email contato@improve.business.'
+        });
+      }
     }
   });
 

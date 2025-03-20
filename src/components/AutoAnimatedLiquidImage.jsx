@@ -1,11 +1,19 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 export function AutoAnimatedLiquidImage({ src, alt, className, width = "400", height = "300", loading = "lazy" }) {
   const containerRef = useRef(null);
   const imageRef = useRef(null);
   const animationRef = useRef(null);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
+    // Resetar o estado de erro quando a source muda
+    setImageError(false);
+  }, [src]);
+
+  useEffect(() => {
+    if (imageError) return; // Não aplicar efeitos se a imagem falhou
+    
     let time = 0;
     
     const animateImage = () => {
@@ -39,7 +47,12 @@ export function AutoAnimatedLiquidImage({ src, alt, className, width = "400", he
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, []);
+  }, [imageError]);
+
+  const handleImageError = () => {
+    console.warn(`Erro ao carregar imagem: ${src}`);
+    setImageError(true);
+  };
 
   return (
     <div 
@@ -47,19 +60,29 @@ export function AutoAnimatedLiquidImage({ src, alt, className, width = "400", he
       className={`relative overflow-hidden ${className}`}
       style={{ perspective: '1000px' }}
     >
-      <img
-        ref={imageRef}
-        src={src}
-        alt={alt || "Imagem ilustrativa"}
-        width={width}
-        height={height}
-        loading={loading}
-        className="w-full h-auto object-cover rounded-[12px] transition-transform"
-        style={{ 
-          willChange: 'transform',
-          transformStyle: 'preserve-3d'
-        }}
-      />
+      {imageError ? (
+        <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-[12px] p-4">
+          <div className="text-center">
+            <div className="text-gray-400 text-4xl mb-2">🖼️</div>
+            <p className="text-gray-600 text-sm">{alt || "Imagem indisponível"}</p>
+          </div>
+        </div>
+      ) : (
+        <img
+          ref={imageRef}
+          src={src}
+          alt={alt || "Imagem ilustrativa"}
+          width={width}
+          height={height}
+          loading={loading}
+          onError={handleImageError}
+          className="w-full h-auto object-cover rounded-[12px] transition-transform"
+          style={{ 
+            willChange: 'transform',
+            transformStyle: 'preserve-3d'
+          }}
+        />
+      )}
     </div>
   );
 } 

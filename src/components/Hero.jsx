@@ -23,7 +23,7 @@ export function Hero() {
                             playsInline
                             preload="auto"
                             className="absolute inset-0 w-full h-full object-cover"
-                            poster="https://res.cloudinary.com/dl4jtxnnv/image/upload/v1742334607/hero-poster_abfc4h.jpg"
+                            poster="https://res.cloudinary.com/dl4jtxnnv/image/upload/v1742314338/Group_1_t1wmpz.svg"
                             aria-hidden="true"
                         >
                             <source 
