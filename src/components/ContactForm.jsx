@@ -5,15 +5,26 @@ import { z } from 'zod';
 import useWeb3Forms from '@web3forms/react';
 
 // Obtendo a chave de acesso da variável de ambiente de forma segura
-const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || process.env.WEB3FORMS_ACCESS_KEY || '';
+const WEB3FORMS_ACCESS_KEY = "7302a07f-6708-4ce9-86eb-38780c6249fd";
 
-// Validação do formulário
-const formSchema = z.object({
+// Adicionar logo após a constante WEB3FORMS_ACCESS_KEY
+
+// Validação do formulário - menos restritiva para dispositivos móveis
+const formSchemaDesktop = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
   email: z.string().email('Email inválido'),
   phone: z.string().min(10, 'Telefone inválido').max(15, 'Telefone muito longo'),
   company: z.string().min(2, 'Nome da empresa deve ter pelo menos 2 caracteres'),
   message: z.string().min(10, 'Mensagem deve ter pelo menos 10 caracteres').max(500, 'Mensagem muito longa')
+});
+
+// Esquema menos restritivo para mobile
+const formSchemaMobile = z.object({
+  name: z.string().min(2, 'Nome muito curto'),
+  email: z.string().email('Email inválido'),
+  phone: z.string().min(8, 'Telefone inválido').max(15, 'Telefone muito longo'),
+  company: z.string().min(2, 'Nome da empresa deve ter pelo menos 2 caracteres'),
+  message: z.string().min(5, 'Mensagem deve ter pelo menos 5 caracteres').max(500, 'Mensagem muito longa')
 });
 
 const formatPhone = (value) => {
@@ -33,7 +44,21 @@ const formatPhone = (value) => {
   return value.slice(0, 15);
 };
 
-export function ContactForm({ onClose }) {
+// Configurar log para captura no Eruda em dispositivos móveis
+const logForEruda = (message, data) => {
+  if (window.eruda) {
+    try {
+      console.group('🔍 Debug Web3Forms');
+      console.log('Mensagem:', message);
+      console.log('Dados:', JSON.stringify(data, null, 2));
+      console.groupEnd();
+    } catch (err) {
+      console.error('Erro ao logar para Eruda:', err);
+    }
+  }
+};
+
+export function ContactForm({ onClose, onMobileFormFailure }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -47,10 +72,18 @@ export function ContactForm({ onClose }) {
   const [isMobile, setIsMobile] = useState(false);
   const botcheckRef = useRef("");  // Referência para o campo botcheck
 
+  // Para debug e diagnóstico
+  const formSubmissionAttempts = useRef(0);
+
+  // Contador de falhas para dispositivos móveis
+  const mobileFailureAttempts = useRef(0);
+  
   useEffect(() => {
     // Detectar se é dispositivo móvel
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      console.log(`Detectado: ${mobile ? "Mobile" : "Desktop"}, largura: ${window.innerWidth}px`);
     };
     
     // Verificar inicialmente
@@ -67,12 +100,20 @@ export function ContactForm({ onClose }) {
   useEffect(() => {
     console.log("Modo dispositivo:", isMobile ? "Mobile" : "Desktop");
     console.log("API Key configurada:", WEB3FORMS_ACCESS_KEY ? "Sim" : "Não");
+    console.log("User Agent:", navigator.userAgent);
     
     // Verificar se há problemas com a chave no carregamento
     if (!WEB3FORMS_ACCESS_KEY) {
-      console.warn("Chave de API Web3Forms não encontrada. Verifique o arquivo .env");
+      console.warn("Chave de API Web3Forms não encontrada. Usando chave de fallback.");
     }
   }, [isMobile]);
+
+  // Verificar se precisamos usar o fallback para dispositivos móveis
+  useEffect(() => {
+    if (isMobile && mobileFailureAttempts.current >= 2 && onMobileFormFailure) {
+      onMobileFormFailure();
+    }
+  }, [isMobile, onMobileFormFailure]);
 
   // Configuração do Web3Forms
   const { submit } = useWeb3Forms({
@@ -102,6 +143,11 @@ export function ContactForm({ onClose }) {
     },
     onError: (message, data) => {
       console.error('Erro no formulário Web3Forms:', message, data);
+      console.error('Tentativas de envio:', formSubmissionAttempts.current);
+      console.error('Dispositivo:', isMobile ? "Mobile" : "Desktop");
+      
+      // Log especial para Eruda
+      logForEruda('Erro Web3Forms', { message, data, device: isMobile ? 'mobile' : 'desktop' });
       
       // Verificar se o erro está relacionado à chave de API
       if (message && message.toLowerCase().includes("api key")) {
@@ -112,7 +158,7 @@ export function ContactForm({ onClose }) {
       } else {
         setSubmitStatus({
           type: 'error',
-          message: 'Não foi possível enviar sua mensagem. Por favor, tente novamente mais tarde ou entre em contato diretamente pelo email contato@improve.business.'
+          message: 'Não foi possível enviar sua mensagem. Por favor, entre em contato diretamente pelo email contato@improve.business.'
         });
       }
     }
@@ -130,18 +176,75 @@ export function ContactForm({ onClose }) {
     }));
   };
 
+  const createPlainSubmitData = () => {
+    // Cria um objeto com apenas os dados do formulário (sem funções ou métodos)
+    return {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      company: formData.company,
+      message: formData.message,
+      from_name: 'Contato ImproveAI',
+      subject: `Contato de ${formData.name} - ${formData.company}`,
+      botcheck: ''
+    };
+  };
+
+  // Método alternativo para envio em dispositivos iOS quando Web3Forms falha
+  const submitAlternative = async (formData) => {
+    try {
+      logForEruda('Tentando envio alternativo', { method: 'fetch direto' });
+      
+      const endpoint = 'https://api.web3forms.com/submit';
+      
+      const data = {
+        ...formData,
+        access_key: WEB3FORMS_ACCESS_KEY,
+        from_name: 'Formulário ImproveAI Mobile',
+        subject: `Contato Mobile de ${formData.name} - ${formData.company}`,
+      };
+      
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      
+      const result = await response.json();
+      logForEruda('Resposta do envio alternativo', { result, status: response.status });
+      
+      if (result.success) {
+        return { success: true, message: result.message };
+      } else {
+        throw new Error(result.message || 'Falha no envio alternativo');
+      }
+    } catch (error) {
+      logForEruda('Erro no envio alternativo', { error: error.toString() });
+      throw error;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus(null);
+    formSubmissionAttempts.current += 1;
 
     try {
-      console.log("Iniciando envio do formulário");
-      console.log("Dados do formulário:", JSON.stringify(formData));
+      console.log(`Iniciando envio #${formSubmissionAttempts.current} em ${isMobile ? "Mobile" : "Desktop"}`);
+      logForEruda('Iniciando envio de formulário', { 
+        attempt: formSubmissionAttempts.current, 
+        device: isMobile ? "Mobile" : "Desktop",
+        userAgent: navigator.userAgent
+      });
       
       // Verifica se a chave API está configurada
       if (!WEB3FORMS_ACCESS_KEY) {
         console.error("Erro de configuração: Chave API do Web3Forms não encontrada");
+        logForEruda('Chave API não encontrada', { apiKey: !!WEB3FORMS_ACCESS_KEY });
         setSubmitStatus({ 
           type: 'error', 
           message: 'Erro de configuração no formulário. Por favor, entre em contato pelo email contato@improve.business.' 
@@ -149,8 +252,9 @@ export function ContactForm({ onClose }) {
         throw new Error("API key não configurada");
       }
       
-      // Validando os dados com Zod antes de enviar
-      const validation = formSchema.safeParse(formData);
+      // Validando os dados com Zod com esquema adequado ao dispositivo
+      const schema = isMobile ? formSchemaMobile : formSchemaDesktop;
+      const validation = schema.safeParse(formData);
       
       if (!validation.success) {
         const error = validation.error.issues[0];
@@ -163,35 +267,102 @@ export function ContactForm({ onClose }) {
         throw new Error(error.message);
       }
 
-      // Preparando dados para envio
-      const submitData = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        company: formData.company,
-        message: formData.message,
-        botcheck: botcheckRef.current,
-        'h-captcha-response': '',
-        subject: `Contato de ${formData.name} - ${formData.company}`,
-        replyTo: formData.email,
-        from_name: formData.name,
-        from_origin: window.location.href,
-        device: isMobile ? 'mobile' : 'desktop',
-        user_agent: navigator.userAgent
-      };
+      // Dados mais simples para envio em mobile
+      let submitData;
+      
+      if (isMobile) {
+        // Versão simplificada para mobile
+        submitData = createPlainSubmitData();
+      } else {
+        // Versão completa para desktop
+        submitData = {
+          ...createPlainSubmitData(),
+          replyTo: formData.email,
+          'h-captcha-response': '',
+          from_origin: window.location.href,
+          device: isMobile ? 'mobile' : 'desktop',
+          user_agent: navigator.userAgent
+        };
+      }
 
       console.log("Dados a serem enviados:", JSON.stringify(submitData));
 
-      // Enviando dados usando Web3Forms
-      await submit(submitData);
+      // Antes de chamar o submit
+      logForEruda('Submissão iminente', { 
+        data: submitData,
+        isMobile,
+        url: window.location.href
+      });
+
+      // Enviando dados usando Web3Forms ou método alternativo para iOS
+      let success = false;
+      
+      if (isMobile && /iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+        try {
+          logForEruda('Detectado iOS, usando método alternativo', { userAgent: navigator.userAgent });
+          const result = await submitAlternative(submitData);
+          success = result.success;
+          logForEruda('Resultado do envio alternativo', { result });
+        } catch (iosError) {
+          logForEruda('Falha no método alternativo iOS', { error: iosError.toString() });
+          // Se falhar o método alternativo, tentamos o método normal
+          const response = await submit(submitData);
+          success = true;
+          logForEruda('Sucesso na submissão normal após falha no alternativo', { response });
+        }
+      } else {
+        // Método padrão para outros dispositivos
+        const response = await submit(submitData);
+        success = true;
+        logForEruda('Sucesso na submissão padrão', { response });
+      }
+      
+      if (!success) {
+        throw new Error('Falha no envio do formulário');
+      }
 
     } catch (error) {
       console.error('Erro detalhado ao enviar formulário:', error);
+      console.error('Stack trace:', error.stack);
+      
+      // Log detalhado do erro para Eruda
+      logForEruda('Erro na submissão', { 
+        error: error.toString(),
+        stack: error.stack,
+        browserInfo: {
+          userAgent: navigator.userAgent,
+          viewport: `${window.innerWidth}x${window.innerHeight}`,
+          language: navigator.language,
+          cookiesEnabled: navigator.cookieEnabled,
+          online: navigator.onLine
+        }
+      });
+      
+      // Registrar falha para dispositivos móveis
+      if (isMobile && onMobileFormFailure) {
+        mobileFailureAttempts.current += 1;
+        console.log(`Tentativa de envio em mobile falhou (${mobileFailureAttempts.current}/2)`);
+        
+        // Se já tentou várias vezes, vamos para o fallback
+        if (mobileFailureAttempts.current >= 2) {
+          onMobileFormFailure();
+          return;
+        }
+      }
+      
       if (!submitStatus) {
-        setSubmitStatus({ 
-          type: 'error', 
-          message: 'Não foi possível enviar sua mensagem agora. Por favor, tente novamente mais tarde.' 
-        });
+        // Para dispositivos móveis, oferecer um método alternativo
+        if (isMobile) {
+          setSubmitStatus({ 
+            type: 'error', 
+            message: 'Não foi possível enviar o formulário. Tentando método alternativo...' 
+          });
+        } else {
+          setSubmitStatus({ 
+            type: 'error', 
+            message: 'Não foi possível enviar sua mensagem. Por favor, tente novamente mais tarde.' 
+          });
+        }
       }
     } finally {
       setIsSubmitting(false);

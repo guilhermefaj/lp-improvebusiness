@@ -5,6 +5,17 @@ import { TouchHandler } from './TouchHandler';
 
 export function Modal({ isOpen, onClose, children }) {
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Acompanha se o modal acabou de abrir para evitar fechar por acidente
+  const [justOpened, setJustOpened] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setJustOpened(true);
+      const timer = setTimeout(() => setJustOpened(false), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -44,10 +55,17 @@ export function Modal({ isOpen, onClose, children }) {
 
   // Renderiza um indicador de swipe apenas em dispositivos móveis
   const SwipeIndicator = () => (
-    <div className="absolute top-2 left-0 right-0 flex justify-center pointer-events-none">
+    <div className="absolute top-2 left-0 right-0 flex justify-center pointer-events-none z-10">
       <div className="w-16 h-1 bg-gray-300 rounded-full"></div>
     </div>
   );
+
+  // Manipulador de swipe seguro que evita fechar o modal por acidente
+  const handleSwipeDown = () => {
+    if (!justOpened) {
+      onClose();
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -57,7 +75,7 @@ export function Modal({ isOpen, onClose, children }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={justOpened ? undefined : onClose}
             className="fixed inset-0 bg-black/60 z-[9999] backdrop-blur-sm"
           />
           
@@ -82,7 +100,7 @@ export function Modal({ isOpen, onClose, children }) {
 
                 {isMobile && <SwipeIndicator />}
                 
-                <TouchHandler onSwipeDown={onClose} threshold={30}>
+                <TouchHandler onSwipeDown={handleSwipeDown} threshold={50}>
                   {children}
                 </TouchHandler>
               </motion.div>
