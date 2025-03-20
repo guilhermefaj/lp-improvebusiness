@@ -23,23 +23,23 @@ export function Modal({ isOpen, onClose, children }) {
 
   useEffect(() => {
     if (isOpen) {
+      const scrollY = window.scrollY;
+      
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'fixed';
       document.body.style.width = '100%';
       document.body.style.height = '100%';
-    } else {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
+      document.body.style.top = `-${scrollY}px`;
+      
+      return () => {
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+        document.body.style.height = '';
+        document.body.style.top = '';
+        window.scrollTo(0, scrollY);
+      };
     }
-
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
-    };
   }, [isOpen]);
 
   // Renderiza um indicador de swipe apenas em dispositivos móveis
@@ -62,13 +62,15 @@ export function Modal({ isOpen, onClose, children }) {
           />
           
           <div className="fixed inset-0 z-[9999] overflow-y-auto overscroll-contain">
-            <div className="min-h-full flex items-center justify-center p-4 md:p-6">
+            <div className={`min-h-full flex items-${isMobile ? 'end' : 'center'} justify-center p-4 md:p-6`}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: isMobile ? 100 : 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: isMobile ? 100 : 20 }}
                 transition={{ type: "spring", duration: 0.5 }}
-                className="w-full max-w-[600px] relative bg-white rounded-[20px] shadow-xl"
+                className={`w-full max-w-[600px] relative bg-white rounded-[20px] shadow-xl ${
+                  isMobile ? 'max-h-[90vh] rounded-b-none' : ''
+                }`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
@@ -80,7 +82,7 @@ export function Modal({ isOpen, onClose, children }) {
 
                 {isMobile && <SwipeIndicator />}
                 
-                <TouchHandler onSwipeDown={onClose}>
+                <TouchHandler onSwipeDown={onClose} threshold={30}>
                   {children}
                 </TouchHandler>
               </motion.div>

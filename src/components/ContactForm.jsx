@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { EnvelopeSimple, User, Phone, Buildings } from '@phosphor-icons/react';
 import { z } from 'zod';
 import useWeb3Forms from '@web3forms/react';
 
-// Obtendo a chave de acesso da variável de ambiente
-const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || "YOUR_ACCESS_KEY_HERE";
+// Obtendo a chave de acesso da variável de ambiente de forma segura
+const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || process.env.WEB3FORMS_ACCESS_KEY || '';
 
+// Validação do formulário
 const formSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
   email: z.string().email('Email inválido'),
@@ -44,6 +45,7 @@ export function ContactForm({ onClose }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const botcheckRef = useRef("");  // Referência para o campo botcheck
 
   useEffect(() => {
     // Detectar se é dispositivo móvel
@@ -61,6 +63,12 @@ export function ContactForm({ onClose }) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Log para debug - removendo exposição da chave
+  useEffect(() => {
+    console.log("Modo dispositivo:", isMobile ? "Mobile" : "Desktop");
+    console.log("API Key configurada:", WEB3FORMS_ACCESS_KEY ? "Sim" : "Não");
+  }, [isMobile]);
+
   // Configuração do Web3Forms
   const { submit } = useWeb3Forms({
     access_key: WEB3FORMS_ACCESS_KEY,
@@ -70,6 +78,7 @@ export function ContactForm({ onClose }) {
       botcheck: true,
     },
     onSuccess: (message, data) => {
+      console.log("Sucesso no envio:", message);
       setSubmitStatus({ 
         type: 'success', 
         message: 'Mensagem enviada com sucesso! Em breve entraremos em contato.' 
@@ -87,7 +96,7 @@ export function ContactForm({ onClose }) {
       }, 3000);
     },
     onError: (message, data) => {
-      console.error('Erro no formulário:', message, data);
+      console.error('Erro no formulário Web3Forms:', message, data);
       setSubmitStatus({
         type: 'error',
         message: 'Não foi possível enviar sua mensagem. Por favor, tente novamente mais tarde ou entre em contato diretamente pelo email contato@improve.business.'
@@ -113,11 +122,25 @@ export function ContactForm({ onClose }) {
     setSubmitStatus(null);
 
     try {
+      console.log("Iniciando envio do formulário");
+      console.log("Dados do formulário:", JSON.stringify(formData));
+      
+      // Verifica se a chave API está configurada
+      if (!WEB3FORMS_ACCESS_KEY) {
+        console.error("Erro de configuração: Chave API do Web3Forms não encontrada");
+        setSubmitStatus({ 
+          type: 'error', 
+          message: 'Erro de configuração no formulário. Por favor, entre em contato pelo email contato@improve.business.' 
+        });
+        throw new Error("API key não configurada");
+      }
+      
       // Validando os dados com Zod antes de enviar
       const validation = formSchema.safeParse(formData);
       
       if (!validation.success) {
         const error = validation.error.issues[0];
+        console.error("Erro de validação:", error);
         setSubmitStatus({ 
           type: 'error', 
           path: error.path[0],
@@ -126,24 +149,30 @@ export function ContactForm({ onClose }) {
         throw new Error(error.message);
       }
 
-      // Enviando dados usando Web3Forms
-      await submit({
+      // Preparando dados para envio
+      const submitData = {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         company: formData.company,
         message: formData.message,
-        botcheck: '',
+        botcheck: botcheckRef.current,
         'h-captcha-response': '',
         subject: `Contato de ${formData.name} - ${formData.company}`,
         replyTo: formData.email,
         from_name: formData.name,
         from_origin: window.location.href,
-        device: isMobile ? 'mobile' : 'desktop'
-      });
+        device: isMobile ? 'mobile' : 'desktop',
+        user_agent: navigator.userAgent
+      };
+
+      console.log("Dados a serem enviados:", JSON.stringify(submitData));
+
+      // Enviando dados usando Web3Forms
+      await submit(submitData);
 
     } catch (error) {
-      console.error('Erro ao enviar formulário:', error);
+      console.error('Erro detalhado ao enviar formulário:', error);
       if (!submitStatus) {
         setSubmitStatus({ 
           type: 'error', 
@@ -161,6 +190,15 @@ export function ContactForm({ onClose }) {
         Entre em Contato
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+        {/* Campo oculto para botcheck */}
+        <input 
+          type="checkbox" 
+          name="botcheck" 
+          className="hidden" 
+          onChange={(e) => botcheckRef.current = e.target.value}
+          style={{ display: 'none' }} 
+        />
+
         <div>
           <div className="relative">
             <User className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
