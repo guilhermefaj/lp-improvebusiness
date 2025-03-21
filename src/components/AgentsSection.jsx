@@ -13,7 +13,7 @@ export function AgentsSection() {
       description: 'Aprimore a experiência do cliente com interações personalizadas, inteligentes e eficientes, proporcionadas pelos agentes de IA da Improve. À medida que as demandas dos clientes evoluem, entregar experiências memoráveis tornou-se essencial para líderes empresariais. Agentes de resposta fortalecem relacionamentos e elevam o engajamento, orientando os clientes a obterem as informações que precisam de forma intuitiva.',
       icon: HeadCircuit,
       iconColor: 'text-[#FF610B]',
-      link: '/agentes-inteligentes'
+      link: '/agentes-de-resposta'
     },
     {
       id: 'exp2',
@@ -21,7 +21,7 @@ export function AgentsSection() {
       description: 'Aprimore a experiência do cliente com interações personalizadas, inteligentes e eficientes, proporcionadas pelos agentes de IA da Improve. À medida que as demandas dos clientes evoluem, entregar experiências memoráveis tornou-se essencial para líderes empresariais. Action Agents otimizam tempo e simplificam interações, resolvendo questões rapidamente e reduzindo o tempo médio de resolução.',
       icon: Brain,
       iconColor: 'text-[#FF610B]',
-      link: '/agentes-inteligentes'
+      link: '/agentes-de-acao'
     }
   ];
 
