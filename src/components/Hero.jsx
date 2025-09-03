@@ -55,17 +55,20 @@ export function Hero() {
                             id="hero-heading" 
                             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-clash font-bold mb-4 lg:mb-6 leading-tight max-w-[280px] sm:max-w-[400px] md:max-w-[600px] text-white [text-shadow:0px_2px_4px_rgba(0,0,0,0.25)]"
                         >
-                            A Improve leva a IA conversacional para o próximo nível
+                            Reduza custos e aumente a eficiência com automações inteligentes
                         </h1>
+                        <p className="text-base sm:text-lg md:text-xl font-ibm mb-6 lg:mb-8 leading-relaxed max-w-[280px] sm:max-w-[400px] md:max-w-[550px] text-gray-200 [text-shadow:0px_1px_3px_rgba(0,0,0,0.2)]">
+                            Sua operação merece mais do que promessas: entregamos soluções que realmente funcionam, do planejamento à automação.
+                        </p>
                         <motion.button 
                             onClick={openContactModal}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             className="w-[160px] sm:w-[180px] h-[36px] sm:h-[40px] bg-white rounded-[30px] hover:bg-gray-50 transition-all shadow-md hover:shadow-lg"
-                            aria-label="Entre em contato conosco"
+                            aria-label="Agendar Diagnóstico"
                         >
                             <span className="text-black font-ibm font-semibold text-sm sm:text-base">
-                                Entrar em contato
+                                Agendar Diagnóstico
                             </span>
                         </motion.button>
                     </motion.div>

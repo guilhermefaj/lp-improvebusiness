@@ -19,7 +19,7 @@ export function AgentesDeResposta() {
       "Centraliza todas as informações da empresa, eliminando fragmentação e servindo como um único ponto de contato para tirar dúvidas"
     ],
     conclusion: "Coleta e processa dados das interações para evoluir continuamente, adaptar-se e identificar oportunidades de novos serviços com base nas demandas reais dos clientes",
-    image: "https://res.cloudinary.com/dl4jtxnnv/image/upload/v1742246485/4_hfcras.png"
+    image: "https://res.cloudinary.com/dl4jtxnnv/image/upload/v1747419853/2_2_vvesgp.png"
   };
 
   return (

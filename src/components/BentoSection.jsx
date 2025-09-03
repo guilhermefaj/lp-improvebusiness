@@ -12,10 +12,13 @@ export function BentoSection() {
           <div className="w-full max-w-[1360px] mx-auto">
             <div className="mb-8 sm:mb-10 md:mb-12">
               <h2 className="text-[#1E1E1E] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-clash font-bold mb-3 sm:mb-4">
-                IA que Converte Custos em Valor
+                IA que Elimina Gargalos e Escala sua Operação
               </h2>
+              <p className="text-[#4A5568] text-sm sm:text-base md:text-lg lg:text-xl max-w-2xl font-ibm mb-4">
+                Nossos agentes inteligentes automatizam processos estratégicos da sua empresa, reduzindo custos operacionais e aumentando a eficiência — sem depender de interações humanas.
+              </p>
               <p className="text-[#4A5568] text-sm sm:text-base md:text-lg lg:text-xl max-w-2xl font-ibm">
-                Nossos agentes inteligentes revolucionam a experiência do cliente, transformando centros de atendimento em motores de crescimento empresarial.
+                De tarefas administrativas a fluxos críticos de produção, criamos soluções sob medida para o que mais consome tempo e energia na sua operação.
               </p>
             </div>
 
@@ -45,7 +48,7 @@ export function BentoSection() {
                     viewport={{ once: true }}
                     className="font-clash text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#1E1E1E]"
                   >
-                    Voz e bate-papo com IA
+                    Automação de Processos Repetitivos
                   </motion.h3>
                   <motion.p
                     initial={{ opacity: 0, y: 10 }}
@@ -54,7 +57,7 @@ export function BentoSection() {
                     viewport={{ once: true }}
                     className="text-[#4A5568] font-ibm text-sm sm:text-base leading-relaxed"
                   >
-                    Alguns clientes preferem fazer chamadas, enquanto outros gostam mais de conversar por chat. Os agentes de IA da Improve realizam ambas as opções, proporcionando interações de alta qualidade por voz e texto.
+                    IA que executa rotinas administrativas, operacionais e financeiras. Elimine tarefas manuais como lançamentos, verificações e aprovações. A IA assume etapas com regras claras, reduzindo erros e ganhando velocidade.
                   </motion.p>
                 </div>
               </motion.div>
@@ -84,7 +87,7 @@ export function BentoSection() {
                     viewport={{ once: true }}
                     className="font-clash text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#1E1E1E]"
                   >
-                    Serviço 24h/7
+                    Operações Ininterruptas (24h/7)
                   </motion.h3>
                   <motion.p
                     initial={{ opacity: 0, y: 10 }}
@@ -93,7 +96,7 @@ export function BentoSection() {
                     viewport={{ once: true }}
                     className="text-[#4A5568] font-ibm text-sm sm:text-base leading-relaxed"
                   >
-                    Os agentes de IA da Improve permitem que as empresas ampliem seus horários de suporte. Com funcionamento ininterrupto, eles estão disponíveis a qualquer momento para atender às solicitações dos clientes.
+                    Fluxos que funcionam sozinhos — dia e noite. Mesmo sem ninguém online, seus processos continuam rodando: envio de relatórios, atualização de sistemas, cruzamento de dados e muito mais.
                   </motion.p>
                 </div>
               </motion.div>
@@ -123,7 +126,7 @@ export function BentoSection() {
                     viewport={{ once: true }}
                     className="font-clash text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#1E1E1E]"
                   >
-                    Idiomas
+                    Integração entre Sistemas
                   </motion.h3>
                   <motion.p
                     initial={{ opacity: 0, y: 10 }}
@@ -132,7 +135,7 @@ export function BentoSection() {
                     viewport={{ once: true }}
                     className="text-[#4A5568] font-ibm text-sm sm:text-base leading-relaxed"
                   >
-                    Com domínio avançado em mais de 100 idiomas, incluindo dialetos regionais e linguagens técnicas, os agentes de IA da Improve transcendem barreiras linguísticas para oferecer um atendimento ágil, preciso e personalizado a clientes em qualquer parte do mundo.
+                    IA que conecta plataformas e toma decisões automáticas. Pare de copiar e colar dados entre sistemas. Criamos automações que integram CRMs, ERPs, bancos de dados e qualquer outra ferramenta do seu stack.
                   </motion.p>
                 </div>
               </motion.div>
@@ -162,7 +165,7 @@ export function BentoSection() {
                     viewport={{ once: true }}
                     className="font-clash text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#1E1E1E]"
                   >
-                    Sempre aprendendo
+                    Aprendizado Contínuo com Dados Reais
                   </motion.h3>
                   <motion.p
                     initial={{ opacity: 0, y: 10 }}
@@ -171,7 +174,7 @@ export function BentoSection() {
                     viewport={{ once: true }}
                     className="text-[#4A5568] font-ibm text-sm sm:text-base leading-relaxed"
                   >
-                    As demandas dos clientes e das marcas mudam ao longo do tempo. Por isso, os agentes de IA da Improve são a solução ideal para CX, pois aprendem e aprimoram suas interações constantemente.
+                    Automação que evolui com base no comportamento do seu negócio. Nossos agentes são configurados para aprender com padrões e ajustes. Quanto mais rodarem, mais inteligentes e eficientes se tornam.
                   </motion.p>
                 </div>
               </motion.div>
