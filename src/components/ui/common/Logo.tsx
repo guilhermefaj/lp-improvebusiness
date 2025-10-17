@@ -10,7 +10,7 @@ export function Logo({ className = "" }: LogoProps) {
       aria-label="Improve Business IA - Página inicial"
     >
       <img 
-        src="/src/logo.png" 
+        src="/logo.png" 
         alt="Improve Business IA" 
         className="h-8 w-auto object-contain"
         width={128}

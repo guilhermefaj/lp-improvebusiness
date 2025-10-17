@@ -12,7 +12,7 @@ export function Footer() {
             {/* Coluna 1 - Logo e Descrição */}
             <div className="space-y-6">
               <img 
-                src="/src/logo.png" 
+                src="/logo.png" 
                 alt="ImproveAI Logo" 
                 className="h-[40px] w-auto shrink-0 object-contain"
               />
