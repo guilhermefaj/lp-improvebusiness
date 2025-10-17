@@ -150,9 +150,9 @@ export function AdaptiveSection() {
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-white rounded-full shadow-lg flex items-center justify-center"
             >
               <img 
-                src="/logo.png"
+                src="https://f005.backblazeb2.com/file/improvebusinessai/logo.svg"
                 alt="Improve AI"
-                className="w-16 h-16"
+                className="w-20 h-20 max-w-full object-contain"
               />
             </div>
 

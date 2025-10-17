@@ -19,10 +19,11 @@ export const Icons = {
     </svg>
   ),
   logo: () => (
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="12" cy="12" r="9" fill="#000"/>
-      <path d="M8 12L11 15L16 9" stroke="white" strokeWidth="2"/>
-    </svg>
+    <img 
+      src="https://f005.backblazeb2.com/file/improvebusinessai/logo.svg" 
+      alt="ImproveAI Logo" 
+      className="w-8 h-8 object-contain"
+    />
   ),
   gsap: () => (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

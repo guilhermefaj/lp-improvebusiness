@@ -12,9 +12,9 @@ export function Footer() {
             {/* Coluna 1 - Logo e Descrição */}
             <div className="space-y-6">
               <img 
-                src="/logo.png" 
+                src="https://f005.backblazeb2.com/file/improvebusinessai/logo.svg" 
                 alt="ImproveAI Logo" 
-                className="h-[40px] w-auto shrink-0 object-contain"
+                className="h-16 w-auto max-w-full shrink-0 object-contain"
               />
               <p className="text-white/80 font-ibm text-base leading-relaxed">
                 Transformando o atendimento ao cliente com IA avançada. Soluções inteligentes para empresas que buscam excelência.
