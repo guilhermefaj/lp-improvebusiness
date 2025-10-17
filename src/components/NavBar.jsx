@@ -46,11 +46,11 @@ export function NavBar() {
                             <a href="#" className="nav-link text-xl">Soluções</a>
                             <a href="#" className="nav-link text-xl">Clientes</a>
                             <a href="#" className="nav-link text-xl">Sobre Nós</a>
-                            <button className="w-[136px] h-[40px] bg-[#FF6511] hover:bg-primary-hover rounded-[30px] transition-colors">
+                            <a href="mailto:contato@improve.business?subject=Contato%20via%20site" className="w-[136px] h-[40px] bg-[#FF6511] hover:bg-primary-hover rounded-[30px] transition-colors flex items-center justify-center">
                                 <span className="text-white font-ibm font-semibold">
                                     Contato
                                 </span>
-                            </button>
+                            </a>
                         </div>
                     </motion.div>
                 )}
@@ -64,11 +64,15 @@ export function NavBar() {
             </div>
 
             {/* Botão Contato - Desktop */}
-            <button className="hidden lg:block w-[136px] h-[40px] bg-[#FF6511] hover:bg-primary-hover rounded-[30px] transition-colors">
+            <a href="mailto:contato@improve.business?subject=Contato%20via%20site" className="hidden lg:flex w-[136px] h-[40px] bg-[#FF6511] hover:bg-primary-hover rounded-[30px] transition-colors items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white">
+                  <path d="M1.5 8.67v6.58A2.25 2.25 0 0 0 3.75 17.5h16.5a2.25 2.25 0 0 0 2.25-2.25V8.67l-8.7 5.06a2.25 2.25 0 0 1-2.3 0L1.5 8.67Z"/>
+                  <path d="M22.5 6.75v-.08A2.25 2.25 0 0 0 20.25 4.5H3.75A2.25 2.25 0 0 0 1.5 6.67v.08l9.17 5.33a.75.75 0 0 0 .76 0L22.5 6.75Z"/>
+                </svg>
                 <span className="text-white font-ibm font-semibold">
                     Contato
                 </span>
-            </button>
+            </a>
         </nav>
     );
 } 

@@ -1,0 +1,18 @@
+name = "improveai-site"
+compatibility_date = "2024-01-15"
+
+[env.production]
+name = "improveai-site"
+
+[env.preview]
+name = "improveai-site-preview"
+
+# Configurações para Cloudflare Pages
+[build]
+command = "npm run build"
+cwd = "."
+watch_dir = "src"
+
+# Configurações para Functions
+[[functions]]
+directory = "functions"

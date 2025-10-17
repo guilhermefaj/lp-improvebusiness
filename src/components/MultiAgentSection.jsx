@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
 import { Card } from "./Card";
-import { useContactModal } from '../contexts/ContactModalContext';
+import { WhatsappLogo } from '@phosphor-icons/react';
 
 export function MultiAgentSection() {
-    const { openContactModal } = useContactModal();
     
     return (
         <section className="w-full bg-white py-6 md:py-16 lg:py-20">
@@ -53,17 +52,20 @@ export function MultiAgentSection() {
                         >
                             A integração dos agentes melhora a performance da sua empresa desde o primeiro dia. Você ganha vantagem competitiva com velocidade, eficiência e visão estratégica — sem depender de ferramentas genéricas.
                         </motion.p>
-                        <motion.button
+                        <motion.a
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.4 }}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            onClick={openContactModal}
-                            className="w-full md:w-auto px-6 md:px-8 py-3 border-2 border-[#FF610B] text-[#FF610B] rounded-full font-ibm font-semibold transition-all duration-300 hover:bg-[#FF610B] hover:text-white"
+                            href="https://wa.me/5511936190477?text=Ol%C3%A1,%20eu%20gostaria%20de%20gerar%20um%20relat%C3%B3rio%20consultivo%20gratuito%20para%20a%20minha%20empresa."
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full md:w-auto px-6 md:px-8 py-3 border-2 border-[#FF610B] text-[#FF610B] rounded-full font-ibm font-semibold transition-all duration-300 hover:bg-[#FF610B] hover:text-white inline-flex items-center justify-center gap-2"
                         >
-                            Agendar Diagnóstico
-                        </motion.button>
+                            <WhatsappLogo size={18} className="text-[#FF610B]" />
+                            Gerar Relatório
+                        </motion.a>
                     </div>
                 </motion.div>
             </div>

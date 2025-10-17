@@ -105,15 +105,13 @@ export function Header() {
                                     >
                                         Soluções
                                     </a>
-                                    <button 
-                                        onClick={() => {
-                                            setIsMenuOpen(false);
-                                            openContactModal();
-                                        }}
-                                        className="mt-4 w-[200px] py-3 bg-[#FF610B] text-white text-lg font-clash font-semibold rounded-full hover:bg-[#e65709] transition-colors"
+                                    <a 
+                                        href="mailto:contato@improve.business?subject=Contato%20via%20site"
+                                        onClick={() => setIsMenuOpen(false)}
+                                        className="mt-4 w-[200px] py-3 bg-[#FF610B] text-white text-lg font-clash font-semibold rounded-full hover:bg-[#e65709] transition-colors text-center"
                                     >
                                         Contato
-                                    </button>
+                                    </a>
                                 </div>
                             </motion.div>
                         )}
@@ -132,12 +130,16 @@ export function Header() {
                         </a>
                         <a href="#clientes" className="nav-link">Clientes</a>
                         <a href="#solucoes" className="nav-link">Soluções</a>
-                        <button
-                            onClick={openContactModal}
-                            className="bg-[#FF610B] text-white px-6 py-2 rounded-full hover:bg-[#e65709] transition-colors"
+                        <a
+                            href="mailto:contato@improve.business?subject=Contato%20via%20site"
+                            className="bg-[#FF610B] text-white px-6 py-2 rounded-full hover:bg-[#e65709] transition-colors inline-flex items-center gap-2"
                         >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                              <path d="M1.5 8.67v6.58A2.25 2.25 0 0 0 3.75 17.5h16.5a2.25 2.25 0 0 0 2.25-2.25V8.67l-8.7 5.06a2.25 2.25 0 0 1-2.3 0L1.5 8.67Z"/>
+                              <path d="M22.5 6.75v-.08A2.25 2.25 0 0 0 20.25 4.5H3.75A2.25 2.25 0 0 0 1.5 6.67v.08l9.17 5.33a.75.75 0 0 0 .76 0L22.5 6.75Z"/>
+                            </svg>
                             Contato
-                        </button>
+                        </a>
                     </div>
                 </div>
             </nav>

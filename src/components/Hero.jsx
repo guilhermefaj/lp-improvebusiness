@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
-import { useContactModal } from '../contexts/ContactModalContext';
+import { WhatsappLogo } from '@phosphor-icons/react';
 
 export function Hero() {
-    const { openContactModal } = useContactModal();
 
     return (
         <section className="w-full min-h-[716px] relative bg-gradient-to-b from-[#F5F0EF] from-80.41% to-white to-100%" aria-labelledby="hero-heading">
@@ -40,7 +39,11 @@ export function Hero() {
 
                     {/* Gradient Overlay for better text contrast */}
                     <div 
-                        className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"
+                        className="absolute inset-0 bg-gradient-to-tr from-black/80 via-black/50 to-transparent"
+                        aria-hidden="true"
+                    ></div>
+                    <div 
+                        className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent"
                         aria-hidden="true"
                     ></div>
                     
@@ -58,19 +61,22 @@ export function Hero() {
                             Reduza custos e aumente a eficiência com automações inteligentes
                         </h1>
                         <p className="text-base sm:text-lg md:text-xl font-ibm mb-6 lg:mb-8 leading-relaxed max-w-[280px] sm:max-w-[400px] md:max-w-[550px] text-gray-200 [text-shadow:0px_1px_3px_rgba(0,0,0,0.2)]">
-                            Sua operação merece mais do que promessas: entregamos soluções que realmente funcionam, do planejamento à automação.
+                            Gere um relatório consultivo de forma automatizada e descubra rapidamente como seu negócio pode melhorar. É super rápido.
                         </p>
-                        <motion.button 
-                            onClick={openContactModal}
+                        <motion.a 
+                            href="https://wa.me/5511936190477?text=Ol%C3%A1,%20eu%20gostaria%20de%20gerar%20um%20relat%C3%B3rio%20consultivo%20gratuito%20para%20a%20minha%20empresa."
+                            target="_blank"
+                            rel="noopener noreferrer"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="w-[160px] sm:w-[180px] h-[36px] sm:h-[40px] bg-white rounded-[30px] hover:bg-gray-50 transition-all shadow-md hover:shadow-lg"
-                            aria-label="Agendar Diagnóstico"
+                            className="w-[200px] sm:w-[220px] h-[40px] sm:h-[44px] bg-white rounded-[30px] hover:bg-gray-50 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                            aria-label="Gerar Relatório"
                         >
+                            <WhatsappLogo size={18} className="text-[#FF610B]" />
                             <span className="text-black font-ibm font-semibold text-sm sm:text-base">
-                                Agendar Diagnóstico
+                                Gerar Relatório
                             </span>
-                        </motion.button>
+                        </motion.a>
                     </motion.div>
                 </motion.div>
             </div>

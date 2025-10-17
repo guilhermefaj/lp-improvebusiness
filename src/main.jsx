@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App'
 import { AgentesDeResposta } from './pages/AgentesDeResposta'
 import { AgentesDeAcao } from './pages/AgentesDeAcao'
+import { PoliticaETermos } from './pages/PoliticaETermos'
 import { ContactModalProvider } from './contexts/ContactModalContext'
 import './index.css'
 
@@ -28,6 +29,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/" element={<App />} />
           <Route path="/agentes-de-resposta" element={<AgentesDeResposta />} />
           <Route path="/agentes-de-acao" element={<AgentesDeAcao />} />
+          <Route path="/politica-e-termos" element={<PoliticaETermos />} />
         </Routes>
       </ContactModalProvider>
     </BrowserRouter>

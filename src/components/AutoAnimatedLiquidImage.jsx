@@ -57,7 +57,7 @@ export function AutoAnimatedLiquidImage({ src, alt, className, width = "400", he
   return (
     <div 
       ref={containerRef}
-      className={`relative overflow-hidden ${className}`}
+      className={`relative overflow-visible ${className}`}
       style={{ perspective: '1000px' }}
     >
       {imageError ? (
@@ -76,7 +76,7 @@ export function AutoAnimatedLiquidImage({ src, alt, className, width = "400", he
           height={height}
           loading={loading}
           onError={handleImageError}
-          className="w-full h-auto object-cover rounded-[12px] transition-transform"
+          className="w-full h-auto object-contain rounded-[12px] transition-transform"
           style={{ 
             willChange: 'transform',
             transformStyle: 'preserve-3d'

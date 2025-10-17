@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { EnvelopeSimple, MapPin, InstagramLogo, LinkedinLogo, YoutubeLogo } from '@phosphor-icons/react';
+import { EnvelopeSimple, MapPin, InstagramLogo, LinkedinLogo, GlobeSimple } from '@phosphor-icons/react';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -12,10 +12,9 @@ export function Footer() {
             {/* Coluna 1 - Logo e Descrição */}
             <div className="space-y-6">
               <img 
-                src="https://res.cloudinary.com/dl4jtxnnv/image/upload/v1742314338/Group_1_t1wmpz.svg" 
+                src="/src/logo.png" 
                 alt="ImproveAI Logo" 
-                className="w-[95px] h-[86px] shrink-0"
-                style={{ aspectRatio: '95/86' }}
+                className="h-[40px] w-auto shrink-0 object-contain"
               />
               <p className="text-white/80 font-ibm text-base leading-relaxed">
                 Transformando o atendimento ao cliente com IA avançada. Soluções inteligentes para empresas que buscam excelência.
@@ -79,7 +78,7 @@ export function Footer() {
               <h4 className="font-clash text-lg font-bold mb-6">Redes Sociais</h4>
               <div className="flex gap-4">
                 <motion.a
-                  href="https://instagram.com"
+                  href="https://www.instagram.com/improve.businesss/"
                   target="_blank"
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.1 }}
@@ -89,7 +88,7 @@ export function Footer() {
                   <InstagramLogo size={20} />
                 </motion.a>
                 <motion.a
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/company/improveassessoria/"
                   target="_blank"
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.1 }}
@@ -99,14 +98,14 @@ export function Footer() {
                   <LinkedinLogo size={20} />
                 </motion.a>
                 <motion.a
-                  href="https://youtube.com"
+                  href="https://improve.business"
                   target="_blank"
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors duration-300"
                 >
-                  <YoutubeLogo size={20} />
+                  <GlobeSimple size={20} />
                 </motion.a>
               </div>
             </div>
@@ -117,12 +116,12 @@ export function Footer() {
 
           {/* Copyright */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-white/60 text-sm font-ibm">
-            <p>© {currentYear} ImproveAI. Todos os direitos reservados.</p>
+            <p>© {currentYear} ImproveAI. Todos os direitos reservados. improvebusiness.ai faz parte do grupo Improve Business (improve.business).</p>
             <div className="flex gap-6">
-              <a href="/privacidade" className="hover:text-white transition-colors duration-300">
+              <a href="/politica-e-termos" className="hover:text-white transition-colors duration-300">
                 Política de Privacidade
               </a>
-              <a href="/termos" className="hover:text-white transition-colors duration-300">
+              <a href="/politica-e-termos" className="hover:text-white transition-colors duration-300">
                 Termos de Uso
               </a>
             </div>

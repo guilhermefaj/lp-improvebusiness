@@ -78,14 +78,16 @@ export function AgentsSection() {
               <h3 className="font-clash text-xl sm:text-2xl md:text-3xl font-bold text-[#1E1E1E] mb-4 sm:mb-6">
                 Pronto para automatizar o que realmente consome tempo na sua empresa?
               </h3>
-              <motion.button
-                onClick={openContactModal}
+              <motion.a
+                href="https://wa.me/5511936190477?text=Ol%C3%A1,%20eu%20gostaria%20de%20gerar%20um%20relat%C3%B3rio%20consultivo%20gratuito%20para%20a%20minha%20empresa."
+                target="_blank"
+                rel="noopener noreferrer"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-[#FF610B] text-white font-ibm text-sm sm:text-base md:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full hover:bg-[#e65709] transition-colors duration-300"
+                className="bg-[#FF610B] text-white font-ibm text-sm sm:text-base md:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full hover:bg-[#e65709] transition-colors duration-300 inline-flex items-center gap-2"
               >
-                Agendar Diagnóstico
-              </motion.button>
+                Gerar Relatório
+              </motion.a>
             </motion.div>
           </div>
         </div>

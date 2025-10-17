@@ -88,7 +88,7 @@ export function AgentesDeAcao() {
                   </div>
 
                   {/* Image Content */}
-                  <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] rounded-[20px] overflow-hidden">
+                  <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] rounded-[20px] overflow-visible">
                     <AutoAnimatedLiquidImage
                       src={content.image}
                       alt="Ilustração de Agentes de Ação"
